@@ -1,12 +1,19 @@
 package api.wishlist.domain;
 
 import org.bson.types.Decimal128;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Objects;
 
+@Document
 public class Product {
+
+    @Id
     private String id;
+
     private String name;
+
     private Decimal128 price;
 
     public Product() {
