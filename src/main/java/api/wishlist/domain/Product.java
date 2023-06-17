@@ -22,8 +22,22 @@ public class Product {
     public Product(String id, String name, Decimal128 price) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = this.validatePrice(price);
     }
+
+    private Decimal128 validatePrice(Decimal128 price) {
+        String priceString = price.toString();
+        try {
+            double parsedPrice = Double.parseDouble(priceString);
+            if (parsedPrice < 0) {
+                throw new IllegalArgumentException("O preço não pode ser negativo");
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("O preço deve ser um número válido");
+        }
+        return price;
+    }
+
 
     public String getId() {
         return id;
