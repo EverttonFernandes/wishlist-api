@@ -1,6 +1,6 @@
 package api.wishlist.application.service;
 
-import api.wishlist.application.converter.ProductCreateDTOConverter;
+import api.wishlist.application.converter.ProductDTOConverter;
 import api.wishlist.application.dto.ProductDTO;
 import api.wishlist.domain.Product;
 import api.wishlist.infrastructure.repository.ProductRepository;
@@ -13,11 +13,11 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    private final ProductCreateDTOConverter productCreateDTOConverter;
+    private final ProductDTOConverter productDTOConverter;
 
-    public ProductService(ProductRepository productRepository, ProductCreateDTOConverter productCreateDTOConverter) {
+    public ProductService(ProductRepository productRepository, ProductDTOConverter productDTOConverter) {
         this.productRepository = productRepository;
-        this.productCreateDTOConverter = productCreateDTOConverter;
+        this.productDTOConverter = productDTOConverter;
     }
 
     public List<Product> getProducts() {
@@ -25,7 +25,7 @@ public class ProductService {
     }
 
     public Product createProduct(ProductDTO dto) {
-        var newProduct = productCreateDTOConverter.convertDTO(dto);
+        var newProduct = productDTOConverter.convertDTO(dto);
         productRepository.save(newProduct);
         return newProduct;
     }

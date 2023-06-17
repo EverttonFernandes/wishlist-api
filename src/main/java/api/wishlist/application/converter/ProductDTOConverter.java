@@ -7,18 +7,18 @@ import org.bson.types.Decimal128;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProductCreateDTOConverter implements ConverterDTO {
+public class ProductDTOConverter implements ConverterDTO {
 
-    private BusinessRulesForCreateProduct businessRulesForCreateProduct;
+    private final BusinessRulesForCreateProduct businessRulesForCreateProduct;
 
-    public ProductCreateDTOConverter(BusinessRulesForCreateProduct businessRulesForCreateProduct) {
+    public ProductDTOConverter(BusinessRulesForCreateProduct businessRulesForCreateProduct) {
         this.businessRulesForCreateProduct = businessRulesForCreateProduct;
     }
 
     @Override
     public Product convertDTO(ProductDTO productDTO) {
         Product newProduct = new Product(null, productDTO.getName(), Decimal128.parse(productDTO.getPrice()));
-        businessRulesForCreateProduct.validateNewProduct(newProduct);
+        newProduct.validateProduct(businessRulesForCreateProduct);
         return newProduct;
     }
 }

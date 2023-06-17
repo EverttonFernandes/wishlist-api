@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class BusinessRulesForCreateProduct {
 
-    private ShouldNotAcceptProductsWithTheSameName shouldNotAcceptProductsWithTheSameName;
-    private ShouldNotHaveMoreThanTwentyProducts shouldNotHaveMoreThanTwentyProducts;
+    private final ShouldNotAcceptProductsWithTheSameName shouldNotAcceptProductsWithTheSameName;
+    private final ShouldNotHaveMoreThanTwentyProducts shouldNotHaveMoreThanTwentyProducts;
 
     public BusinessRulesForCreateProduct(ShouldNotAcceptProductsWithTheSameName shouldNotAcceptProductsWithTheSameName, ShouldNotHaveMoreThanTwentyProducts shouldNotHaveMoreThanTwentyProducts) {
         this.shouldNotAcceptProductsWithTheSameName = shouldNotAcceptProductsWithTheSameName;

@@ -1,5 +1,6 @@
 package api.wishlist.domain;
 
+import api.wishlist.domain.businessRules.BusinessRulesForCreateProduct;
 import org.bson.types.Decimal128;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -38,6 +39,9 @@ public class Product {
         return price;
     }
 
+    public void validateProduct(BusinessRulesForCreateProduct businessRulesForCreateProduct) {
+        businessRulesForCreateProduct.validateNewProduct(this);
+    }
 
     public String getId() {
         return id;
