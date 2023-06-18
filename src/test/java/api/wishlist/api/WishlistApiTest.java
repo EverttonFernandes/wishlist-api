@@ -14,7 +14,9 @@ import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -39,8 +41,8 @@ class WishlistApiTest {
         var response = wishlistApi.getAllProducts();
 
         verify(productService, Mockito.times(1)).getProducts();
-        Assertions.assertEquals(200, response.getStatusCodeValue());
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @ParameterizedTest
@@ -49,8 +51,20 @@ class WishlistApiTest {
         given(productService.createProduct(dto)).willReturn(new Product(null, dto.getName(), Decimal128.parse(dto.getPrice())));
         var response = wishlistApi.createProduct(dto);
 
-        Assertions.assertEquals(201, response.getStatusCodeValue());
-        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(201, response.getStatusCodeValue());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         verify(productService, Mockito.times(1)).createProduct(dto);
+    }
+
+    @ParameterizedTest
+    @MethodSource("api.wishlist.fixture.ProductFixture#buildNewProduct")
+    void shouldObtainTheProductRequestedInTheRequisition(Product product) {
+        given(productService.getProductById(product.getId())).willReturn(Optional.of(product));
+        var response = wishlistApi.getProductById(product.getId());
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        verify(productService, Mockito.times(1)).getProductById(product.getId());
     }
 }

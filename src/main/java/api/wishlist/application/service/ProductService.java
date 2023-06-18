@@ -7,6 +7,7 @@ import api.wishlist.infrastructure.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -28,5 +29,9 @@ public class ProductService {
         var newProduct = productDTOConverter.convertDTO(dto);
         productRepository.save(newProduct);
         return newProduct;
+    }
+
+    public Optional<Product> getProductById(String id) {
+        return productRepository.findById(id);
     }
 }

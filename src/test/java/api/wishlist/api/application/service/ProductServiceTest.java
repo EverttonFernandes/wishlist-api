@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -40,7 +41,9 @@ class ProductServiceTest {
     void shouldGetAllProducts() {
         List<Product> products = new ArrayList<>();
         given(productRepository.findAll()).willReturn(products);
+
         productService.getProducts();
+
         verify(productRepository, Mockito.times(1)).findAll();
     }
 
@@ -49,7 +52,19 @@ class ProductServiceTest {
     void shouldCreateProduct(ProductDTO dto) {
         var newProduct = new Product(null, dto.getName(), Decimal128.parse(dto.getPrice()));
         given(productDTOConverter.convertDTO(dto)).willReturn(newProduct);
+
         productService.createProduct(dto);
+
         verify(productRepository, Mockito.times(1)).save(newProduct);
+    }
+
+    @ParameterizedTest
+    @MethodSource("api.wishlist.fixture.ProductFixture#buildNewProduct")
+    void shouldGetByIdTheProductRequestedInTheRequisition(Product product) {
+        given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
+
+        productService.getProductById(product.getId());
+
+        verify(productRepository, Mockito.times(1)).findById(product.getId());
     }
 }
