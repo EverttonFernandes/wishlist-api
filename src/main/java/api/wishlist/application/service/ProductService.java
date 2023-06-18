@@ -34,4 +34,12 @@ public class ProductService {
     public Optional<Product> getProductById(String id) {
         return productRepository.findById(id);
     }
+
+    public boolean deleteProductById(String id) {
+        if (productRepository.findById(id).isPresent()) {
+            productRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }

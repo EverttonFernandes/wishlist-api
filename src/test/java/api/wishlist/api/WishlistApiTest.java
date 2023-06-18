@@ -4,8 +4,8 @@ import api.wishlist.application.dto.ProductDTO;
 import api.wishlist.application.service.ProductService;
 import api.wishlist.domain.Product;
 import org.bson.types.Decimal128;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -58,7 +59,7 @@ class WishlistApiTest {
 
     @ParameterizedTest
     @MethodSource("api.wishlist.fixture.ProductFixture#buildNewProduct")
-    void shouldObtainTheProductRequestedInTheRequisition(Product product) {
+    void shouldGetProductWhenInformedInRequest(Product product) {
         given(productService.getProductById(product.getId())).willReturn(Optional.of(product));
         var response = wishlistApi.getProductById(product.getId());
 
@@ -66,5 +67,16 @@ class WishlistApiTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         verify(productService, Mockito.times(1)).getProductById(product.getId());
+    }
+
+    @Test
+    void shouldDeleteProductWhenInformedInRequest() {
+        given(productService.deleteProductById(anyString())).willReturn(true);
+        var response = wishlistApi.deleteProductById(anyString());
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        verify(productService, Mockito.times(1)).deleteProductById(anyString());
     }
 }

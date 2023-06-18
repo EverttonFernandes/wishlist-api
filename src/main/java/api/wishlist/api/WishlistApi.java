@@ -47,5 +47,15 @@ public class WishlistApi {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<Void> deleteProductById(@PathVariable String id) {
+        boolean isDeleted = productService.deleteProductById(id);
+        if (isDeleted) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
 

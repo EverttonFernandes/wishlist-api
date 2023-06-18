@@ -67,4 +67,15 @@ class ProductServiceTest {
 
         verify(productRepository, Mockito.times(1)).findById(product.getId());
     }
+
+    @ParameterizedTest
+    @MethodSource("api.wishlist.fixture.ProductFixture#buildNewProduct")
+    void shouldExcludeProductByIdWhenInformedInTheRequest(Product product) {
+        given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
+
+        productService.deleteProductById(product.getId());
+
+        verify(productRepository, Mockito.times(1)).findById(product.getId());
+        verify(productRepository, Mockito.times(1)).deleteById(product.getId());
+    }
 }
