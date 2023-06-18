@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.methodOn;
 
@@ -41,19 +40,19 @@ public class WishlistApi {
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable String id) {
-        Optional<Product> productOptional = productService.getProductById(id);
-        return productOptional
+        return productService.getProductById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/products/{id}")
-    public ResponseEntity<Void> deleteProductById(@PathVariable String id) {
+    public ResponseEntity<String> deleteProductById(@PathVariable String id) {
         boolean isDeleted = productService.deleteProductById(id);
         if (isDeleted) {
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.notFound().build();
+            String errorMessage = "Produto não encontrado";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
         }
     }
 

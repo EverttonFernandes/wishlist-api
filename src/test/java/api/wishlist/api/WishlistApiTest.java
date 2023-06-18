@@ -69,6 +69,18 @@ class WishlistApiTest {
         verify(productService, Mockito.times(1)).getProductById(product.getId());
     }
 
+    @ParameterizedTest
+    @MethodSource("api.wishlist.fixture.ProductFixture#buildNewProduct")
+    void shouldNotGetProductWhenNotFound(Product product) {
+        given(productService.getProductById(product.getId())).willReturn(Optional.empty());
+        var response = wishlistApi.getProductById(product.getId());
+
+        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+        verify(productService, Mockito.times(1)).getProductById(product.getId());
+    }
+
     @Test
     void shouldDeleteProductWhenInformedInRequest() {
         given(productService.deleteProductById(anyString())).willReturn(true);
@@ -76,6 +88,18 @@ class WishlistApiTest {
 
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        verify(productService, Mockito.times(1)).deleteProductById(anyString());
+    }
+
+    @Test
+    void shouldNotDeleteProductWhenNotFound() {
+        given(productService.deleteProductById(anyString())).willReturn(false);
+        var response = wishlistApi.deleteProductById(anyString());
+
+        assertEquals(404, response.getStatusCode().value());
+        assertEquals(HttpStatus.NOT_FOUND.name(), response.getStatusCode().name());
+        assertEquals("Produto não encontrado", response.getBody());
 
         verify(productService, Mockito.times(1)).deleteProductById(anyString());
     }

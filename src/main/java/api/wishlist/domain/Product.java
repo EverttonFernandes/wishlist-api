@@ -5,6 +5,7 @@ import org.bson.types.Decimal128;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Document
@@ -27,16 +28,23 @@ public class Product {
     }
 
     private Decimal128 validatePrice(Decimal128 price) {
-        String priceString = price.toString();
-        try {
-            double parsedPrice = Double.parseDouble(priceString);
-            if (parsedPrice < 0) {
-                throw new IllegalArgumentException("O preço não pode ser negativo");
-            }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("O preço deve ser um número válido");
+        if (price.bigDecimalValue().doubleValue() < 0) {
+            throw new IllegalArgumentException("O preço não pode ser negativo");
+        }
+
+        if (!isMonetaryValue(price.toString())) {
+            throw new IllegalArgumentException("O preço deve ser um valor monetário válido");
         }
         return price;
+    }
+
+    private boolean isMonetaryValue(String value) {
+        try {
+            BigDecimal parsedValue = new BigDecimal(value);
+            return parsedValue.compareTo(BigDecimal.ZERO) >= 0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     public void validateProduct(BusinessRulesForCreateProduct businessRulesForCreateProduct) {

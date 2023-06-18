@@ -29,16 +29,17 @@ class ProductTest {
     }
 
     @Test
-    void shouldValidateIfPriceIsMonetaryValue() {
-        String validPrice = "10.99";
-        String invalidPrice = "abc";
+    void shouldReturnExceptionWhenPriceIsNotValidMonetaryValue() {
+        String invalidPrice = "-19.90";
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Product("1", "Product 1", Decimal128.parse(invalidPrice)));
+    }
+    
+    @Test
+    void shouldAcceptValueWhenIsValidMonetaryValue() {
+        String validPrice = "189.99";
 
         Assertions.assertDoesNotThrow(() -> new Product("1", "Product 1", Decimal128.parse(validPrice)));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> createProductWithInvalidPrice("2", "Product 2", invalidPrice));
-    }
-
-    private void createProductWithInvalidPrice(String id, String name, String price) {
-        new Product(id, name, Decimal128.parse(price));
     }
 
 }
