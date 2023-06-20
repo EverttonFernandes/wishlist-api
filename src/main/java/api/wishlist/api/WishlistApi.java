@@ -32,7 +32,7 @@ public class WishlistApi {
     @PostMapping
     public ResponseEntity<EntityModel<Product>> createProduct(@RequestBody ProductDTO dto) {
         Product newProduct = productService.createProduct(dto);
-        Link selfLink = WebMvcLinkBuilder.linkTo(methodOn(WishlistApi.class).createProduct(dto)).withSelfRel();
+        Link selfLink = WebMvcLinkBuilder.linkTo(methodOn(WishlistApi.class).getProductById(newProduct.getId())).withSelfRel();
         EntityModel<Product> resource = EntityModel.of(newProduct);
         resource.add(selfLink);
         return ResponseEntity.status(HttpStatus.CREATED).body(resource);
@@ -45,7 +45,7 @@ public class WishlistApi {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/products/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProductById(@PathVariable String id) {
         boolean isDeleted = productService.deleteProductById(id);
         if (isDeleted) {
